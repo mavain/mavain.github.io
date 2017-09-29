@@ -34,7 +34,32 @@ function update(time) {
 	if(Input.clicked) {
 		var worldX = ((Input.mouseClickX + cameraX) / scale);
 		var worldY = ((Input.mouseClickY + cameraY) / scale);
-		entities.push(new Tree(worldX, worldY));
+
+		var clickedOnEntity = false;
+		for(var index in entities) {
+			var entity = entities[index];
+			var halfScaleX = entity.scaleX / 2;
+			var halfScaleY = entity.scaleY / 2;
+			if(worldX > entity.x - halfScaleX && worldX < entity.x + halfScaleX && worldY > entity.y - halfScaleY && worldY < entity.y + halfScaleY) {
+				/*
+				We need to convert world coordinates to local coordinates
+				Then, we need to convert from -width / 2 <-> width / 2 to 0 <-> 1
+				Then we do the pointMeshIntersection test
+				*/
+				var scaledX = (worldX - entity.x + halfScaleX) / entity.scaleX;
+				var scaledY = (worldY - entity.y + halfScaleY) / entity.scaleY;
+				if(Geometry.pointMeshIntersection(entity.image, scaledX, scaledY)) {
+					clickedOnEntity = true;
+					if(entity.name != "player") {
+						entities.splice(index, 1);
+					}
+					break;
+				}
+			}
+		}
+		if(!clickedOnEntity) {
+			entities.push(new Tree(worldX, worldY));
+		}
 	}
 }
 

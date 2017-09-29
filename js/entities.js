@@ -1,15 +1,18 @@
-
-function Player(x, y) {
-    this.name = "player";
+function Entity(name, x, y) {
+    this.name = name;
     this.x = x;
     this.y = y;
     this.scaleX = 1;
     this.scaleY = 1;
+    this.radius = 1.41;
+    this.hitboxes = [];
+}
+Entity.prototype.update = function(fps, deltaFps, entities) {};
+
+function Player(x, y) {
+    Entity.call(this, "player", x, y);
     this.image = "player";
     this.radius = 2;
-    this.hitboxes = [
-
-    ];
     this.update = function(fps, deltaFps, entities) {
         var velx = 0;
         var vely = 0;
@@ -37,6 +40,11 @@ function Player(x, y) {
             }
             for(var hitboxIndex in entity.hitboxes) {
                 var hitbox = entity.hitboxes[hitboxIndex];
+                /*
+                Entities are drawn using imageCentered, so their positions are in the middle of their sprites
+                Hitboxes are defined from the top left however, so we need to use conversion
+                Hitboxes are also normalized coordinates
+                */
                 var x = entity.x - entity.scaleX / 2 + hitbox.x * entity.scaleX;
                 var y = entity.y - entity.scaleY / 2 + hitbox.y * entity.scaleY;
                 var width = hitbox.width * entity.scaleX;
@@ -59,11 +67,10 @@ function Player(x, y) {
         this.y += vely;
     };
 }
+Player.prototype = Object.create(Entity.prototype);
 
 function Tree(x, y) {
-    this.name = "tree";
-    this.x = x;
-    this.y = y;
+    Entity.call(this, "tree", x, y);
     this.image = "tree_growing";
     this.scaleX = 2;
     this.scaleY = 2;
@@ -74,15 +81,11 @@ function Tree(x, y) {
             "x": 0.4, "y": 0.4, "width": 0.2, "height": 0.6
         }
     ];
-
-    this.update = function(fps, deltaFps, entities) {
-    };
 }
+Tree.prototype = Object.create(Entity.prototype);
 
 function Rock(x, y) {
-    this.name = "rock";
-    this.x = x;
-    this.y = y;
+    Entity.call(this, "rock", x, y);
     this.image = "rock";
     this.scaleX = 2;
     this.scaleY = 2;
@@ -93,8 +96,5 @@ function Rock(x, y) {
             "x": 0.1, "y": 0.5, "width": 0.8, "height": 0.25
         }
     ];
-
-    this.update = function(fps, deltaFps, entities) {
-
-    };
 }
+Rock.prototype = Object.create(Entity.prototype);
