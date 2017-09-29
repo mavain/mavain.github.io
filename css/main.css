@@ -1,0 +1,17 @@
+/* CSS Document */
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	padding: 0px;
+	margin: 0px;
+	overflow: hidden;
+}
+
+#renderCanvas {
+	width: 100vw;
+	height: 100vh;
+	background-color: black;
+}
