@@ -3,7 +3,8 @@
 var images = {
 	"player": new Image(),
 	"tree_little": new Image(),
-	"tree_growing": new Image()
+	"tree_growing": new Image(),
+	"rock": new Image()
 };
 
 var fps = 60;
@@ -15,27 +16,42 @@ var cameraX = -window.innerWidth / 2;
 var cameraY = -window.innerHeight / 2;
 
 var entities = [
-	new Tree(3, 0)
+	new Tree(3, 0),
+	new Rock(5, 0)
 ];
 var player = new Player(0, 0);
 entities.push(player);
 
 function update(time) {
+	entities.sort(function(a, b) { return a.y - b.y; });
 	for(var index in entities) {
 		var entity = entities[index];
-		entity.update(fps, deltaFps);
+		entity.update(fps, deltaFps, entities);
 	}
 	cameraX = MathExtensions.lerp(cameraX, -window.innerWidth / 2 + player.x * scale, deltaFps);
 	cameraY = MathExtensions.lerp(cameraY, -window.innerHeight / 2 + player.y * scale, deltaFps);
+
+	if(Input.clicked) {
+		var worldX = ((Input.mouseClickX + cameraX) / scale);
+		var worldY = ((Input.mouseClickY + cameraY) / scale);
+		entities.push(new Tree(worldX, worldY));
+	}
 }
 
 function render(time) {
 	Graphics.clear("#ffffff");
+
 	for(var index in entities) {
 		var entity = entities[index];
-		Graphics.imageCentered(images[entity.image], -cameraX + entity.x * scale, -cameraY + entity.y * scale, scale * entity.scaleX, scale * entity.scaleY);
+		var x = -cameraX + entity.x * scale;
+		var y = -cameraY + entity.y * scale;
+		var sx = scale * entity.scaleX;
+		var sy = scale * entity.scaleY;
+		if(x > window.innerWidth + sx || x < -sx || y > window.innerHeight + sy || y < -sx) {
+			continue;
+		}
+		Graphics.imageCentered(images[entity.image], x, y, sx, sy);
 	}
-	Graphics.imageCentered(images.player, -cameraX + player.x * scale, -cameraY + player.y * scale, scale, scale);
 }
 
 for(var imageName in images) {
@@ -62,6 +78,7 @@ window.onload = function() {
 		window.requestAnimationFrame(loop);
 		update(time);
 		render(time);
+		Input.clicked = false;
 		fps = 1000 / (time - lastTime);
 		deltaFps = 1 / fps;
 		lastTime = time;
