@@ -17,6 +17,14 @@ Graphics.rect = function(style, x, y, width, height) {
 	Graphics.context.fillRect(x, y, width, height);
 };
 
+Graphics.rectOutline = function(style, x, y, width, height) {
+	Graphics.context.strokeStyle = style;
+	Graphics.context.beginPath();
+	Graphics.context.rect(x, y, width, height);
+	Graphics.context.closePath();
+	Graphics.context.stroke();
+};
+
 Graphics.clear = function(style) {
 	Graphics.rect(style, 0, 0, Graphics.canvas.width, Graphics.canvas.height);
 };

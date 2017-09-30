@@ -6,8 +6,11 @@ function Entity(name, x, y) {
     this.scaleY = 1;
     this.radius = 1.41;
     this.hitboxes = [];
+    this.health = 100;
+    this.maxHealth = 100;
 }
 Entity.prototype.update = function(fps, deltaFps, entities) {};
+Entity.prototype.click = function(x, y) {};
 
 function Player(x, y) {
     Entity.call(this, "player", x, y);
@@ -81,6 +84,11 @@ function Tree(x, y) {
             "x": 0.4, "y": 0.4, "width": 0.2, "height": 0.6
         }
     ];
+
+    this.click = function(x, y) {
+        this.health -= 10;
+        console.log(this.health);
+    }
 }
 Tree.prototype = Object.create(Entity.prototype);
 

@@ -50,7 +50,8 @@ function update(time) {
 				var scaledY = (worldY - entity.y + halfScaleY) / entity.scaleY;
 				if(Geometry.pointMeshIntersection(entity.image, scaledX, scaledY)) {
 					clickedOnEntity = true;
-					if(entity.name != "player") {
+					entity.click(scaledX, scaledY);
+					if(entity.health <= 0) {
 						entities.splice(index, 1);
 					}
 					break;
@@ -76,6 +77,10 @@ function render(time) {
 			continue;
 		}
 		Graphics.imageCentered(images[entity.image], x, y, sx, sy);
+		if(entity.health !== entity.maxHealth) {
+			Graphics.rectOutline("#000", x - sx / 2, y + sy / 2, sx, scale / 10);
+			Graphics.rect("#09f", x - sx / 2, y + sy / 2, sx * (entity.health / entity.maxHealth), scale / 10);
+		}
 	}
 }
 
