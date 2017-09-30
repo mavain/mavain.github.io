@@ -36,6 +36,7 @@ function update(time) {
 		var worldY = ((Input.mouseClickY + cameraY) / scale);
 
 		var clickedOnEntity = false;
+		entities.reverse();
 		for(var index in entities) {
 			var entity = entities[index];
 			var halfScaleX = entity.scaleX / 2;
@@ -58,6 +59,7 @@ function update(time) {
 				}
 			}
 		}
+		entities.reverse();
 		if(!clickedOnEntity) {
 			entities.push(new Tree(worldX, worldY));
 		}
